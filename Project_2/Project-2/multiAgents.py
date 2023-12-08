@@ -153,14 +153,69 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(**kwargs)
 
-    def getAction(self, gameState):
+    def getAction(self, state):
         """
-        Returns the minimax action using self.depth and self.evaluationFunction
+        Returns the minimax action using alpha-beta pruning with self.depth and self.evaluationFunction
+        """
 
-        You should keep track of alpha and beta in each node to be able to implement alpha-beta pruning.
-        """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        def alpha_beta_pruning(state, depth, alpha, beta, agentIndex):
+            if state.isGameFinished() or depth == 0:
+                return self.evaluationFunction(state), None
+
+            legalActions = state.getLegalActions(agentIndex)
+
+            if agentIndex == 0:  # Maximizing agent (self)
+                maxEval = float("-inf")
+                bestAction = None
+
+                for action in legalActions:
+                    nextState = state.generateSuccessor(agentIndex, action)
+                    eval, _ = alpha_beta_pruning(
+                        nextState,
+                        depth - 1,
+                        alpha,
+                        beta,
+                        (agentIndex + 1) % state.getNumAgents(),
+                    )
+
+                    if eval > maxEval:
+                        maxEval = eval
+                        bestAction = action
+
+                    alpha = max(alpha, maxEval)
+                    if beta <= alpha:
+                        break  # Beta cutoff
+
+                return maxEval, bestAction
+
+            else:  # Minimizing agent (opponent)
+                minEval = float("inf")
+                bestAction = None
+
+                for action in legalActions:
+                    nextState = state.generateSuccessor(agentIndex, action)
+                    eval, _ = alpha_beta_pruning(
+                        nextState,
+                        depth - 1,
+                        alpha,
+                        beta,
+                        (agentIndex + 1) % state.getNumAgents(),
+                    )
+
+                    if eval < minEval:
+                        minEval = eval
+                        bestAction = action
+
+                    beta = min(beta, minEval)
+                    if beta <= alpha:
+                        break  # Alpha cutoff
+
+                return minEval, bestAction
+
+        _, bestAction = alpha_beta_pruning(
+            state, self.depth, float("-inf"), float("inf"), 0
+        )
+        return bestAction
 
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
