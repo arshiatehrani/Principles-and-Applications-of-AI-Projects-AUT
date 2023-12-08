@@ -96,6 +96,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns the minimax action using self.depth and self.evaluationFunction
         """
 
+        # Function
         def minimax(state, depth, agentIndex):
             # Check if terminal state or reached maximum depth
             if state.isGameFinished() or depth == 0:
