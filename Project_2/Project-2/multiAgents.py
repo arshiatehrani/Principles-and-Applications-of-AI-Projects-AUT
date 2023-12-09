@@ -229,6 +229,9 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
     def getAction(self, state):
         """
         Returns the expectimax action using self.depth and self.evaluationFunction
+
+        All opponents should be modeled as choosing uniformly at random from their
+        legal moves.
         """
 
         def expectimax(state, depth, agentIndex):
@@ -253,8 +256,8 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
 
                 return maxEval, bestAction
 
-            else:  # Chance node (opponents)
-                expectedEval = 0.0
+            else:  # Chance node (opponent)
+                avgEval = 0.0
                 numActions = len(legalActions)
 
                 for action in legalActions:
@@ -262,9 +265,9 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
                     eval, _ = expectimax(
                         nextState, depth - 1, (agentIndex + 1) % state.getNumAgents()
                     )
-                    expectedEval += eval
+                    avgEval += eval
 
-                return expectedEval / numActions, None
+                return avgEval / numActions, None
 
         _, bestAction = expectimax(state, self.depth, 0)
         return bestAction
