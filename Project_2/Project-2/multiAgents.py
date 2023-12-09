@@ -275,34 +275,32 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
 
 def betterEvaluationFunction(currentGameState):
     """
-    Your extreme evaluation function.
-
-    You are asked to read the following paper on othello heuristics and extend it for two to four player rollit game.
-    Implementing a good stability heuristic has extra points.
-    Any other brilliant ideas are also accepted. Just try and be original.
-
-    The paper: Sannidhanam, Vaishnavi, and Muthukaruppan Annamalai. "An analysis of heuristics in othello." (2015).
-
-    Here are also some functions you will need to use:
-
-    gameState.getPieces(index) -> list
-    gameState.getCorners() -> 4-tuple
-    gameState.getScore() -> list
-    gameState.getScore(index) -> int
-
+    Your evaluation function for the Rollit game.
     """
 
-    "*** YOUR CODE HERE ***"
+    def Parity(currentGameState):
+        # Get scores for both players
+        maxScore = currentGameState.getScore(0)
+        minScore = currentGameState.getScore(1)
 
-    # parity
+        # Calculate parity heuristic
+        scoreDifference = maxScore - minScore
+        totalScore = maxScore + minScore
 
-    # corners
+        # Avoid division by zero
+        if totalScore == 0:
+            return 0
 
-    # mobility
+        parity = scoreDifference / totalScore
 
-    # stability
+        return parity
 
-    util.raiseNotDefined()
+    # Combine the heuristic values using appropriate weights
+    ParityWeight = 1
+
+    evalValue = Parity(currentGameState) * ParityWeight
+
+    return evalValue
 
 
 # Abbreviation
