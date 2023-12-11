@@ -360,10 +360,10 @@ def betterEvaluationFunction(currentGameState):
         return stabilityValue
 
     # Combine the heuristic values using appropriate weights (ones are only for the test, based on the performance, the weights could be improved)
-    ParityWeight = 0
-    MobilityWeight = 0
+    ParityWeight = 1
+    MobilityWeight = 1
     CornersWeight = 1
-    StabilityWeight = 0
+    StabilityWeight = 1
 
     evalValue = (
         Parity(currentGameState) * ParityWeight
