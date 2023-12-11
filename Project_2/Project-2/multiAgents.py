@@ -311,14 +311,30 @@ def betterEvaluationFunction(currentGameState):
 
         return mobilityHeuristic
 
-    def Corners(currentGameState):
-        corners = currentGameState.getCorners()
-        playerCorners = [
-            corners[i] for i in range(3) if currentGameState.getPieces(0)[i]
-        ]
-        return len(playerCorners)
+    # def Corners(currentGameState):
+    #     corners = currentGameState.getCorners()
+    #     playerCorners = [
+    #         corners[i] for i in range(4) if currentGameState.getPieces(0)[i]
+    #     ]
+    #     return len(playerCorners)
 
-        # Get corner positions for both players
+    #     # Get corner positions for both players
+    def Corners(currentGameState):
+        corners = currentGameState.getCorners()  # Get corner positions
+        playerPieces = currentGameState.getPieces(0)  # Get player's pieces
+
+        # we iterate through each corner and check if
+        # it's occupied by a player's piece,
+        # incrementing playerCorners accordingly.
+        # This approach avoids the index out of range error
+        # and should correctly count
+        # the number of corners occupied by the player.
+        playerCorners = 0
+        for corner in corners:
+            if corner in playerPieces:
+                playerCorners += 1
+
+        return playerCorners
 
     def isStable(currentGameState, playerIndex, piece):
         # True if the piece is stable, False otherwise.
@@ -343,11 +359,11 @@ def betterEvaluationFunction(currentGameState):
 
         return stabilityValue
 
-    # Combine the heuristic values using appropriate weights
-    ParityWeight = 1000
-    MobilityWeight = 1
+    # Combine the heuristic values using appropriate weights (ones are only for the test, based on the performance, the weights could be improved)
+    ParityWeight = 0
+    MobilityWeight = 0
     CornersWeight = 1
-    StabilityWeight = 1
+    StabilityWeight = 0
 
     evalValue = (
         Parity(currentGameState) * ParityWeight
