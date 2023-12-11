@@ -292,13 +292,69 @@ def betterEvaluationFunction(currentGameState):
             return 0
 
         parity = scoreDifference / totalScore
-
         return parity
 
-    # Combine the heuristic values using appropriate weights
-    ParityWeight = 1
+    def Mobility(currentGameState):
+        # Calculate mobility for both players
+        maxMobility = len(currentGameState.getLegalActions(0))
+        minMobility = len(currentGameState.getLegalActions(1))
 
-    evalValue = Parity(currentGameState) * ParityWeight
+        # Calculate mobility heuristic
+        mobilityDifference = maxMobility - minMobility
+        totalMobility = maxMobility + minMobility
+
+        # Avoid division by zero
+        if totalMobility != 0:
+            mobilityHeuristic = 100 * (mobilityDifference / totalMobility)
+        else:
+            mobilityHeuristic = 0
+
+        return mobilityHeuristic
+
+    def Corners(currentGameState):
+        corners = currentGameState.getCorners()
+        playerCorners = [
+            corners[i] for i in range(3) if currentGameState.getPieces(0)[i]
+        ]
+        return len(playerCorners)
+
+        # Get corner positions for both players
+
+    def isStable(currentGameState, playerIndex, piece):
+        # True if the piece is stable, False otherwise.
+        # Add your stability criteria here
+        # For example, a piece is stable if it is surrounded by friendly pieces
+
+        # Check if the piece is in a corner (always stable)
+        if piece in currentGameState.getCorners():
+            return True
+        return False
+
+    def Stability(currentGameState):
+        playerPieces = currentGameState.getPieces(0)
+        stabilityValue = 0
+
+        # Check each piece for stability
+        for piece in playerPieces:
+            if isStable(currentGameState, 0, piece):
+                stabilityValue += 1
+            else:
+                stabilityValue -= 1
+
+        return stabilityValue
+
+    # Combine the heuristic values using appropriate weights
+    ParityWeight = 1000
+    MobilityWeight = 1
+    CornersWeight = 1
+    StabilityWeight = 1
+
+    evalValue = (
+        Parity(currentGameState) * ParityWeight
+        + Mobility(currentGameState) * MobilityWeight
+        + Corners(currentGameState) * CornersWeight
+        + Stability(currentGameState) * StabilityWeight
+    )
 
     return evalValue
 
